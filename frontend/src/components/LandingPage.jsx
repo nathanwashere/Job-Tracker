@@ -4,21 +4,25 @@ function LandingPage() {
   return (
     <>
       <div>
-        <h1>Welcome to "Job Tracker!"</h1>
-        <button
-          onClick={() => {
-            navigate("/login");
-          }}
-        >
-          Log in
-        </button>
-        <button
-          onClick={() => {
-            navigate("/sign-up");
-          }}
-        >
-          Sign up
-        </button>
+        <form>
+          <h1>Welcome to "Job Tracker!"</h1>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/login");
+            }}
+          >
+            Log in
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/sign-up");
+            }}
+          >
+            Sign up
+          </button>
+        </form>
       </div>
     </>
   );
