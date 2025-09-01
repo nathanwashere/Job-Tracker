@@ -1,15 +1,17 @@
-import { use, useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
 function Signup() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmployed, setIsEmployed] = useState(false);
+  const { user, setUser } = useContext(UserContext);
   const navigator = useNavigate();
-  function handleSignup(e) {
+  async function handleSignup(e) {
     e.preventDefault();
-    createUser();
+    await createUser();
     navigator("/homepage");
   }
   async function createUser() {
@@ -30,7 +32,14 @@ function Signup() {
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
-      const result = await response.json();
+      const data = await response.json();
+      setUser({
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        email: data.user.email,
+        passsord: data.user.password,
+        employed: data.user.employed,
+      });
     } catch (error) {
       console.error(`Error while creating a new user: ${error}`);
     }
