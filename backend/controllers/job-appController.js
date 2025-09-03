@@ -27,7 +27,49 @@ async function saveJobApplication(req, res) {
     console.log(
       `Error while creating a new job application in backend: ${error}`
     );
-    res.status(500).json({ message: "Error creating new job application" });
+    res
+      .status(500)
+      .json({ message: "Error while creating new job application" });
   }
 }
-module.exports = saveJobApplication;
+async function findAllJobApplication(req, res) {
+  try {
+    const { userId } = req.query;
+    const jobApplications = await JobApplication.find({ userId: userId });
+    if (!jobApplications.length) {
+      return res.status(200).json({
+        message: `Could not find any job applications with user id: ${userId}`,
+        jobApplications: [],
+      });
+    }
+    return res
+      .status(200)
+      .json({ message: "Found job applications", jobApplications });
+  } catch (error) {
+    console.log(
+      `Error while trying to access database to get job application with user id: ${error}`
+    );
+    res.status(500).json({ message: "Error while finding job application" });
+  }
+}
+async function deleteJobApplication(req, res) {
+  try {
+    const { jobId } = req.params;
+    const result = await JobApplication.findByIdAndDelete(jobId);
+    if (!result) {
+      // Send a 404 if the document was not found
+      return res.status(404).json({ message: "Job application not found." });
+    }
+    return res
+      .status(200)
+      .json({ message: "Job application deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Error while deleting job application" });
+  }
+}
+
+module.exports = {
+  saveJobApplication,
+  findAllJobApplication,
+  deleteJobApplication,
+};

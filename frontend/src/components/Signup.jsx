@@ -34,6 +34,7 @@ function Signup() {
       }
       const data = await response.json();
       setUser({
+        id: data.user._id,
         firstName: data.user.firstName,
         lastName: data.user.lastName,
         email: data.user.email,

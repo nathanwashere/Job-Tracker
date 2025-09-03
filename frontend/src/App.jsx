@@ -3,6 +3,7 @@ import { useState, createContext } from "react";
 import LandingPage from "./components/LandingPage";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import AddJob from "./components/AddJob";
 import Homepage from "./components/Homepage";
 import "./App.css";
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<Signup />} />
+          <Route path="/add-job" element={<AddJob />} />
           <Route path="/homepage" element={<Homepage />} />
         </Routes>
       </BrowserRouter>

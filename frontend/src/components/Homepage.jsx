@@ -1,115 +1,103 @@
-import React, { useContext, useState } from "react";
-import { UserContext } from "../App";
+import { useContext, useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
+import { ToastContainer, toast } from "react-toastify";
+import "../style/Homepage.css";
 function Homepage() {
-  const statuses = [
-    { label: "Pending", value: "pending" },
-    { label: "Accepted", value: "accepted" },
-    { label: "Rejected", value: "rejected" },
-    { label: "Ghosted", value: "ghosted" },
-  ];
   const { user } = useContext(UserContext);
-  const [company, setCompany] = useState("");
-  const [position, setPosition] = useState("");
-  const [date, setDate] = useState(formatDate(Date.now()));
-  const [status, setStatus] = useState("pending");
   const navigator = useNavigate();
-  function formatDate(date) {
-    const d = new Date(date);
-    let month = "" + (d.getMonth() + 1);
-    let day = "" + d.getDate();
-    const year = d.getFullYear();
-
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
-
-    return [year, month, day].join("-");
+  const [jobApplications, setJobApplications] = useState([]);
+  async function getJobApplications() {
+    try {
+      const data = await getJobApplicationById(user.id);
+      setJobApplications(data.jobApplications || []);
+    } catch (error) {
+      console.error(
+        `Error while getting job applications from database: ${error}`
+      );
+    }
   }
-  async function handleJobApplication(e) {
-    e.preventDefault();
-    await jobApplication();
-  }
-  async function jobApplication() {
+  async function getJobApplicationById(id) {
     try {
       const response = await fetch(
-        "http://localhost:3000/job-application/create",
+        `http://localhost:3000/job-application/find?userId=${id}`
+      );
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(
+        `Error while trying to access job application in db: ${error}`
+      );
+    }
+  }
+  async function deleteJobApplication(id) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/job-application/delete/${id}`,
         {
-          method: "POST",
-          body: JSON.stringify({ user, company, position, date, status }),
-          headers: { "Content-Type": "application/json" },
+          method: "DELETE",
         }
       );
       if (!response.ok) {
-        throw new Error(`Response status: ${response.message}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete application.");
       }
+      setJobApplications((prevApps) =>
+        prevApps.filter((app) => app._id !== id)
+      );
+      toast.success("Job application deleted successfully!");
     } catch (error) {
-      console.error(`Error while trying to save job application : ${error}`);
+      console.error(`Error while trying to delete job application: ${error}`);
     }
   }
+  useEffect(() => {
+    getJobApplications();
+  }, []);
   return (
     <div>
       <h1>
         Welcome {user.firstName} {user.lastName}!
       </h1>
-      <div>
-        <form
-          onSubmit={(e) => {
-            handleJobApplication(e);
-          }}
-        >
-          <label>
-            Company name:
-            <input
-              type="text"
-              placeholder="Company name"
-              onChange={(e) => {
-                setCompany(e.target.value);
-              }}
-              value={company}
-            />
-          </label>
-          <br />
-          <label>
-            Poistion at the company:
-            <input
-              type="text"
-              placeholder="Poistion"
-              onChange={(e) => {
-                setPosition(e.target.value);
-              }}
-              value={position}
-            />
-          </label>
-          <br />
-          <label>
-            Status of application:
-            <select
-              onChange={(e) => {
-                setStatus(e.target.value);
-              }}
-              value={status}
-            >
-              <option value="">--Select a status--</option>
-              {statuses.map((status) => (
-                <option key={status.value} value={status.value}>
-                  {status.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <br />
-          <label>
-            Date of submission
-            <input
-              type="date"
-              onChange={(e) => setDate(e.target.value)}
-              value={date}
-            />
-          </label>
-          <br />
-          <button type="submit">Enter</button>
-        </form>
-      </div>
+      {jobApplications.length ? (
+        <>
+          <h2>Your job applications are:</h2>
+          {jobApplications.map((application) => (
+            <div key={application._id} className="job-application-container">
+              <h3>
+                Company: {application.company}
+                <br />
+                Position: {application.position}
+                <br />
+                Status: {application.status}
+              </h3>
+              <button
+                onClick={async () => {
+                  await deleteJobApplication(application._id);
+                }}
+              >
+                Delete job application
+              </button>
+            </div>
+          ))}
+        </>
+      ) : (
+        <h2>You have no job applications yet!</h2>
+      )}
+      <button
+        onClick={() => {
+          navigator("/add-job");
+        }}
+      >
+        Add a job application
+      </button>
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={true}
+      />
     </div>
   );
 }

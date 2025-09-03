@@ -5,7 +5,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigator = useNavigate();
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   async function handleLogin(e) {
     e.preventDefault();
     await loginUser();
@@ -23,6 +23,7 @@ function Login() {
       }
       const data = await response.json();
       setUser({
+        id: data.user._id,
         firstName: data.user.firstName,
         lastName: data.user.lastName,
         email: data.user.email,
