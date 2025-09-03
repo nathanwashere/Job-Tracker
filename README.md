@@ -1,2 +1,2 @@
 # Job Tracker
-A website you can track your job applications
+A website that lets you track your job applications.
