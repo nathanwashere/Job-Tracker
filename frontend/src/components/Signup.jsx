@@ -51,15 +51,12 @@ function Signup() {
         headers: {
           "Content-Type": "application/json",
         },
-        // credentials: "include", // 👈 critical // COOKIES
+        credentials: "include", // 👈 critical // COOKIES
       });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
       const data = await response.json();
-
-      // ✅ Save token in localStorage
-      localStorage.setItem("token", data.user.token);
 
       return data;
     } catch (error) {

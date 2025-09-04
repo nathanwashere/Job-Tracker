@@ -12,13 +12,14 @@ export const UserContext = createContext();
 function App() {
   const [user, setUser] = useState(null);
   async function loadUser() {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+    // const token = localStorage.getItem("token");
+    // if (!token) return;
     try {
       const response = await fetch("http://localhost:3000/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+        credentials: "include", // 👈 send cookie automatically
       });
 
       if (!response.ok) {
@@ -28,8 +29,11 @@ function App() {
       const data = await response.json();
       setUser(data.user); // ✅ restore logged-in user
     } catch (error) {
-      console.error("Error restoring user from token:", error);
-      localStorage.removeItem("token"); // remove invalid token
+      if (error.message.includes("401")) {
+        setUser(null); // user not logged in, no need to log error
+      } else {
+        console.error("Error restoring user from cookie:", error);
+      }
     }
   }
   useEffect(() => {

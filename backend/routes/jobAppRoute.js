@@ -8,8 +8,8 @@ const {
   deleteJobApplication,
 } = require("../controllers/job-appController");
 
-router.post("/create", saveJobApplication);
+router.post("/create", authMiddleware, saveJobApplication);
 router.get("/find", authMiddleware, findAllJobApplication);
-router.delete("/delete/:jobId", deleteJobApplication);
+router.delete("/delete/:jobId", authMiddleware, deleteJobApplication);
 
 module.exports = router;

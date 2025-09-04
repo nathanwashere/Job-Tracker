@@ -36,8 +36,20 @@ async function createUser(req, res) {
       lastName: newUser.lastName,
       email: newUser.email,
       employed: newUser.employed,
-      token,
     };
+    const oneHour = 1000 * 60 * 60;
+    // Set token in HttpOnly cookie
+    res
+      .cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: oneHour,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .status(201)
+      .json({
+        message: "User added successfully",
+        user: sanitizedUser,
+      });
 
     // 💡 Use 201 Created status for a successful creation
     res.status(201).json({

@@ -49,6 +49,7 @@ function AddJob() {
           method: "POST",
           body: JSON.stringify({ user, company, position, date, status }),
           headers: { "Content-Type": "application/json" },
+          credentials: "include", // important for cookies
         }
       );
 

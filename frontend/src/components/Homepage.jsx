@@ -20,13 +20,10 @@ function Homepage() {
   }
   async function getJobApplicationById(id) {
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(
         `http://localhost:3000/job-application/find`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: "include", // important for cookies
         }
       );
       if (!response.ok) {
@@ -47,6 +44,7 @@ function Homepage() {
         `http://localhost:3000/job-application/delete/${id}`,
         {
           method: "DELETE",
+          credentials: "include", // important for cookies
         }
       );
       if (!response.ok) {
@@ -105,7 +103,6 @@ function Homepage() {
       <br />
       <button
         onClick={() => {
-          localStorage.removeItem("token");
           toast.success("You have been logged out!", {
             onClose: () => {
               setUser(null);
