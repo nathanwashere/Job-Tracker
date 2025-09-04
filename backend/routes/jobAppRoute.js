@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 
 const {
   saveJobApplication,
@@ -8,7 +9,7 @@ const {
 } = require("../controllers/job-appController");
 
 router.post("/create", saveJobApplication);
-router.get("/find", findAllJobApplication);
+router.get("/find", authMiddleware, findAllJobApplication);
 router.delete("/delete/:jobId", deleteJobApplication);
 
 module.exports = router;

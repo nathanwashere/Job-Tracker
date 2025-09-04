@@ -1,5 +1,6 @@
 const User = require("../mongo schema/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 async function createUser(req, res) {
   try {
     const { firstName, lastName, email, password, isEmployed } = req.body;
@@ -20,6 +21,14 @@ async function createUser(req, res) {
       employed: isEmployed,
     });
     await newUser.save();
+
+    // ✅ create JWT
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email },
+      process.env.JWT_SECRET, // ✅ no quotes
+      { expiresIn: "1h" }
+    );
+
     // 💡 Sanitize the user object before sending it in the response
     const sanitizedUser = {
       _id: newUser._id,
@@ -27,6 +36,7 @@ async function createUser(req, res) {
       lastName: newUser.lastName,
       email: newUser.email,
       employed: newUser.employed,
+      token,
     };
 
     // 💡 Use 201 Created status for a successful creation
@@ -61,13 +71,32 @@ async function loginUser(req, res) {
       employed: user.employed,
     };
 
+    // 🔑 Create a JWT token
+    const token = jwt.sign(
+      { id: user._id, email: user.email }, // payload
+      process.env.JWT_SECRET, // secret (move to .env later!)
+      { expiresIn: "1h" } // token life
+    );
+
     res.status(200).json({
       message: "Login successful!",
       user: sanitizedUser,
+      token,
     });
   } catch (error) {
     console.error(`Error while logging in (server): ${error}`);
     res.status(500).json({ message: "Server error" });
   }
 }
-module.exports = { createUser, loginUser };
+async function getUserCookie(req, res) {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ user });
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+module.exports = { createUser, loginUser, getUserCookie };

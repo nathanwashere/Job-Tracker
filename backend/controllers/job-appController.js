@@ -34,7 +34,8 @@ async function saveJobApplication(req, res) {
 }
 async function findAllJobApplication(req, res) {
   try {
-    const { userId } = req.query;
+    // const { userId } = req.query;
+    const userId = req.user.id; // ✅ get user ID from JWT, not query
     const jobApplications = await JobApplication.find({ userId: userId });
     if (!jobApplications.length) {
       return res.status(200).json({

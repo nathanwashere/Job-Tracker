@@ -1,16 +1,17 @@
-import { useContext, useState, useEffect, use } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../style/Homepage.css";
 function Homepage() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigator = useNavigate();
   const [jobApplications, setJobApplications] = useState([]);
   async function getJobApplications() {
     try {
-      const data = await getJobApplicationById(user.id);
-      setJobApplications(data.jobApplications || []);
+      const applications = await getJobApplicationById(user.id);
+      setJobApplications(applications || []);
     } catch (error) {
       console.error(
         `Error while getting job applications from database: ${error}`
@@ -19,14 +20,21 @@ function Homepage() {
   }
   async function getJobApplicationById(id) {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/job-application/find?userId=${id}`
+        `http://localhost:3000/job-application/find`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
+
       const data = await response.json();
-      return data;
+      return data.jobApplications;
     } catch (error) {
       console.error(
         `Error while trying to access job application in db: ${error}`
@@ -93,11 +101,21 @@ function Homepage() {
       >
         Add a job application
       </button>
-      <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={true}
-      />
+
+      <br />
+      <button
+        onClick={() => {
+          localStorage.removeItem("token");
+          toast.success("You have been logged out!", {
+            onClose: () => {
+              setUser(null);
+              navigator("/");
+            },
+          });
+        }}
+      >
+        Log out
+      </button>
     </div>
   );
 }

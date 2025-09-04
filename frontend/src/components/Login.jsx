@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
 import { UserContext } from "../App";
 function Login() {
   const [email, setEmail] = useState("");
@@ -8,8 +9,26 @@ function Login() {
   const { setUser } = useContext(UserContext);
   async function handleLogin(e) {
     e.preventDefault();
-    await loginUser();
-    navigator("/homepage");
+    try {
+      const data = await loginUser();
+      toast.success("User has successfully logged in!", {
+        autoClose: 1000, // matches the container
+        onClose: () => {
+          setUser({
+            id: data.user._id,
+            firstName: data.user.firstName,
+            lastName: data.user.lastName,
+            email: data.user.email,
+            password: data.user.password,
+            employed: data.user.employed,
+          });
+          navigator("/homepage");
+        },
+      });
+    } catch (error) {
+      console.error(`Error while logging in user: ${error}`);
+      toast.error("Email or password not valid!");
+    }
   }
   async function loginUser() {
     try {
@@ -22,16 +41,14 @@ function Login() {
         throw new Error(`Response status: ${response.status}`);
       }
       const data = await response.json();
-      setUser({
-        id: data.user._id,
-        firstName: data.user.firstName,
-        lastName: data.user.lastName,
-        email: data.user.email,
-        password: data.user.password,
-        employed: data.user.employed,
-      });
+
+      // ✅ Save token in localStorage
+      localStorage.setItem("token", data.token);
+
+      return data;
     } catch (error) {
       console.error(`Error while logging user: ${error}`);
+      throw error;
     }
   }
   return (

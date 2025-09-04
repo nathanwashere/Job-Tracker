@@ -1,3 +1,4 @@
+require("dotenv").config();
 const connectDB = require("./connectMongo.js");
 const cors = require("cors");
 const express = require("express");
@@ -7,6 +8,12 @@ const userRoutes = require("./routes/authRoute.js");
 const jobApplicationRoutes = require("./routes/jobAppRoute.js");
 
 app.use(cors());
+// app.use(  //COOKIES
+//   cors({
+//     origin: "http://localhost:5173", // your frontend
+//     credentials: true, // allow cookies
+//   })
+// );
 app.use(express.json());
 
 app.use("/auth", userRoutes);

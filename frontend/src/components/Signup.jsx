@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import { UserContext } from "../App";
 function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -7,12 +8,34 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmployed, setIsEmployed] = useState(false);
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
+
   const navigator = useNavigate();
   async function handleSignup(e) {
     e.preventDefault();
-    await createUser();
-    navigator("/homepage");
+    try {
+      const data = await createUser();
+
+      // ✅ Then show toast on the new page
+      toast.success("User has successfully signed up!", {
+        autoClose: 2000,
+        hideProgressBar: true,
+        onClose: () => {
+          setUser({
+            id: data.user._id,
+            firstName: data.user.firstName,
+            lastName: data.user.lastName,
+            email: data.user.email,
+            passsword: data.user.password,
+            employed: data.user.employed,
+          });
+          navigator("/homepage");
+        },
+      });
+    } catch (error) {
+      console.error(`Error while trying to sign up : ${error}`);
+      toast.error("Wrong input!");
+    }
   }
   async function createUser() {
     try {
@@ -28,21 +51,20 @@ function Signup() {
         headers: {
           "Content-Type": "application/json",
         },
+        // credentials: "include", // 👈 critical // COOKIES
       });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
       const data = await response.json();
-      setUser({
-        id: data.user._id,
-        firstName: data.user.firstName,
-        lastName: data.user.lastName,
-        email: data.user.email,
-        passsord: data.user.password,
-        employed: data.user.employed,
-      });
+
+      // ✅ Save token in localStorage
+      localStorage.setItem("token", data.user.token);
+
+      return data;
     } catch (error) {
       console.error(`Error while creating a new user: ${error}`);
+      throw error;
     }
   }
   return (
