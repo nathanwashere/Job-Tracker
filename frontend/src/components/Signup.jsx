@@ -11,12 +11,11 @@ function Signup() {
   const { setUser } = useContext(UserContext);
 
   const navigator = useNavigate();
-  async function handleSignup(e) {
+  const handleSignup = async (e) => {
     e.preventDefault();
     try {
       const data = await createUser();
 
-      // ✅ Then show toast on the new page
       toast.success("User has successfully signed up!", {
         autoClose: 2000,
         hideProgressBar: true,
@@ -36,7 +35,7 @@ function Signup() {
       console.error(`Error while trying to sign up : ${error}`);
       toast.error("Wrong input!");
     }
-  }
+  };
   async function createUser() {
     try {
       const response = await fetch("http://localhost:3000/auth/sign-up", {
@@ -66,11 +65,7 @@ function Signup() {
   }
   return (
     <div>
-      <form
-        onSubmit={(e) => {
-          handleSignup(e);
-        }}
-      >
+      <form onSubmit={handleSignup}>
         <label>
           First name:
           <input

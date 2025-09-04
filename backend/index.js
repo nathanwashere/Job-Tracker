@@ -10,16 +10,12 @@ const cookieParser = require("cookie-parser");
 
 app.use(cookieParser());
 app.use(express.json());
-
-// app.use(cors());
 app.use(
-  //COOKIES
   cors({
-    origin: "http://localhost:5173", // your frontend
-    credentials: true, // allow cookies
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
-
 app.use("/auth", userRoutes);
 app.use("/job-application", jobApplicationRoutes);
 

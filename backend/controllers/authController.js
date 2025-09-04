@@ -50,12 +50,6 @@ async function createUser(req, res) {
         message: "User added successfully",
         user: sanitizedUser,
       });
-
-    // 💡 Use 201 Created status for a successful creation
-    res.status(201).json({
-      message: "User added successfully",
-      user: sanitizedUser,
-    });
   } catch (error) {
     console.error(`Error while trying to create new user: ${error}`);
     res.status(500).json({ message: "Error saving user" });
@@ -69,12 +63,11 @@ async function loginUser(req, res) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
 
-    // compare plain password with stored hash
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
-    // Sanitize the user object to remove the password hash before sending
+
     const sanitizedUser = {
       _id: user._id,
       firstName: user.firstName,
@@ -83,21 +76,42 @@ async function loginUser(req, res) {
       employed: user.employed,
     };
 
-    // 🔑 Create a JWT token
     const token = jwt.sign(
-      { id: user._id, email: user.email }, // payload
-      process.env.JWT_SECRET, // secret (move to .env later!)
-      { expiresIn: "1h" } // token life
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
     );
-
-    res.status(200).json({
-      message: "Login successful!",
-      user: sanitizedUser,
-      token,
-    });
+    const oneHour = 60 * 60 * 1000; // define maxAge
+    res
+      .cookie("jwt", token, {
+        httpOnly: true,
+        maxAge: oneHour,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .status(200)
+      .json({
+        message: "User Logged in successfully",
+        user: sanitizedUser,
+      });
   } catch (error) {
     console.error(`Error while logging in (server): ${error}`);
     res.status(500).json({ message: "Server error" });
+  }
+}
+async function logOutUser(req, res) {
+  try {
+    // check if jwt cookie exists
+    if (!req.cookies || !req.cookies.jwt) {
+      return res.status(200).json({ message: "No active session" });
+    }
+    // clear jwt cookie
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error while trying to log out" });
   }
 }
 async function getUserCookie(req, res) {
@@ -111,4 +125,4 @@ async function getUserCookie(req, res) {
     res.status(500).json({ message: "Server error" });
   }
 }
-module.exports = { createUser, loginUser, getUserCookie };
+module.exports = { createUser, loginUser, getUserCookie, logOutUser };

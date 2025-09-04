@@ -9,7 +9,7 @@ const {
 } = require("../controllers/job-appController");
 
 router.post("/create", authMiddleware, saveJobApplication);
-router.get("/find", authMiddleware, findAllJobApplication);
+router.get("/find-all", authMiddleware, findAllJobApplication);
 router.delete("/delete/:jobId", authMiddleware, deleteJobApplication);
 
 module.exports = router;

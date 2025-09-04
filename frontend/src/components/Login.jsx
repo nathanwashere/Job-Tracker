@@ -7,7 +7,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigator = useNavigate();
   const { setUser } = useContext(UserContext);
-  async function handleLogin(e) {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const data = await loginUser();
@@ -29,21 +29,19 @@ function Login() {
       console.error(`Error while logging in user: ${error}`);
       toast.error("Email or password not valid!");
     }
-  }
+  };
   async function loginUser() {
     try {
       const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         body: JSON.stringify({ email: email, password: password }),
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // 👈 critical // COOKIES
       });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
       const data = await response.json();
-
-      // ✅ Save token in localStorage
-      localStorage.setItem("token", data.token);
 
       return data;
     } catch (error) {
@@ -53,11 +51,7 @@ function Login() {
   }
   return (
     <div>
-      <form
-        onSubmit={(e) => {
-          handleLogin(e);
-        }}
-      >
+      <form onSubmit={handleLogin}>
         <label>
           Email:
           <input

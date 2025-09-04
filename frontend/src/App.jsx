@@ -12,25 +12,20 @@ export const UserContext = createContext();
 function App() {
   const [user, setUser] = useState(null);
   async function loadUser() {
-    // const token = localStorage.getItem("token");
-    // if (!token) return;
     try {
       const response = await fetch("http://localhost:3000/auth/me", {
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
-        credentials: "include", // 👈 send cookie automatically
+        credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
+        throw new Error(`Response status is --> ${response.status}`);
       }
 
       const data = await response.json();
-      setUser(data.user); // ✅ restore logged-in user
+      setUser(data.user);
     } catch (error) {
       if (error.message.includes("401")) {
-        setUser(null); // user not logged in, no need to log error
+        setUser(null);
       } else {
         console.error("Error restoring user from cookie:", error);
       }

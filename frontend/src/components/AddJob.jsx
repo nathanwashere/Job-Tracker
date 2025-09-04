@@ -26,30 +26,30 @@ function AddJob() {
 
     return [year, month, day].join("-");
   }
-  async function handleJobApplication(e) {
+  const handleJobApplication = async (e) => {
     e.preventDefault();
     try {
       const response = await createJobApplication();
       if (!response.ok) {
-        throw new Error(`Error! Failed with status: ${response.status}`);
+        throw new Error(`Error! Failed with status --> ${response.status}`);
       }
       toast.success("Job application submitted successfully!", {
-        onClose: () => navigator("/homepage"), // Navigate after the toast closes
+        onClose: () => navigator("/homepage"),
       });
     } catch (error) {
       toast.error("Failed to submit an application.");
       console.error(`Error while trying to save job application: ${error}`);
     }
-  }
+  };
   async function createJobApplication() {
     try {
       const response = await fetch(
         "http://localhost:3000/job-application/create",
         {
           method: "POST",
-          body: JSON.stringify({ user, company, position, date, status }),
+          body: JSON.stringify({ company, position, date, status }),
           headers: { "Content-Type": "application/json" },
-          credentials: "include", // important for cookies
+          credentials: "include",
         }
       );
 
@@ -62,11 +62,7 @@ function AddJob() {
   return (
     <div>
       <div>
-        <form
-          onSubmit={(e) => {
-            handleJobApplication(e);
-          }}
-        >
+        <form onSubmit={handleJobApplication}>
           <label>
             Company name:
             <input
@@ -80,7 +76,7 @@ function AddJob() {
           </label>
           <br />
           <label>
-            Poistion at the company:
+            Position at the company:
             <input
               type="text"
               placeholder="Poistion"
@@ -128,11 +124,6 @@ function AddJob() {
           </button>
         </form>
       </div>
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={true}
-      /> */}
     </div>
   );
 }

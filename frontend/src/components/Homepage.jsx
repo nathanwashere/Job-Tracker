@@ -10,7 +10,7 @@ function Homepage() {
   const [jobApplications, setJobApplications] = useState([]);
   async function getJobApplications() {
     try {
-      const applications = await getJobApplicationById(user.id);
+      const applications = await getJobApplicationsForCurrentUser();
       setJobApplications(applications || []);
     } catch (error) {
       console.error(
@@ -18,10 +18,10 @@ function Homepage() {
       );
     }
   }
-  async function getJobApplicationById(id) {
+  async function getJobApplicationsForCurrentUser() {
     try {
       const response = await fetch(
-        `http://localhost:3000/job-application/find`,
+        `http://localhost:3000/job-application/find-all`,
         {
           credentials: "include", // important for cookies
         }
@@ -44,12 +44,15 @@ function Homepage() {
         `http://localhost:3000/job-application/delete/${id}`,
         {
           method: "DELETE",
-          credentials: "include", // important for cookies
+          credentials: "include",
         }
       );
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to delete application.");
+        throw new Error(
+          errorData.message || "Response status is --> ",
+          response.status
+        );
       }
       setJobApplications((prevApps) =>
         prevApps.filter((app) => app._id !== id)
@@ -57,6 +60,21 @@ function Homepage() {
       toast.success("Job application deleted successfully!");
     } catch (error) {
       console.error(`Error while trying to delete job application: ${error}`);
+      toast.error("Error!");
+    }
+  }
+  async function logOutUser() {
+    try {
+      const response = await fetch("http://localhost:3000/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      setUser(null);
+    } catch (error) {
+      console.error(`Error while trying to log out: ${error}`);
     }
   }
   useEffect(() => {
@@ -104,9 +122,8 @@ function Homepage() {
       <button
         onClick={() => {
           toast.success("You have been logged out!", {
-            onClose: () => {
-              setUser(null);
-              navigator("/");
+            onClose: async () => {
+              await logOutUser();
             },
           });
         }}

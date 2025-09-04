@@ -2,12 +2,12 @@ const JobApplication = require("../mongo schema/JobApplication");
 const User = require("../mongo schema/User");
 async function saveJobApplication(req, res) {
   try {
-    const { user, company, position, date, status } = req.body;
-    const email = user.email;
-    const userFound = await User.findOne({ email });
+    const { company, position, date, status } = req.body;
+    const userId = req.user.id;
+    const userFound = await User.findOne({ _id: userId });
     if (!userFound) {
       return res.status(404).json({
-        message: `User with the email ${email} has not been found while saving a job application!`,
+        message: `User with the  has not been found while saving a job application!`,
       });
     }
     const newJobApplication = new JobApplication({
@@ -18,7 +18,6 @@ async function saveJobApplication(req, res) {
       userId: userFound._id,
     });
     await newJobApplication.save();
-    // Send back the created application to the client
     res.status(201).json({
       message: "Job application has been added successfully",
       application: newJobApplication,
@@ -34,7 +33,7 @@ async function saveJobApplication(req, res) {
 }
 async function findAllJobApplication(req, res) {
   try {
-    const userId = req.user.id; // ✅ get user ID from JWT, not query
+    const userId = req.user.id;
     const jobApplications = await JobApplication.find({ userId: userId });
     if (!jobApplications.length) {
       return res.status(200).json({
@@ -57,7 +56,6 @@ async function deleteJobApplication(req, res) {
     const { jobId } = req.params;
     const result = await JobApplication.findByIdAndDelete(jobId);
     if (!result) {
-      // Send a 404 if the document was not found
       return res.status(404).json({ message: "Job application not found." });
     }
     return res
@@ -67,7 +65,6 @@ async function deleteJobApplication(req, res) {
     res.status(500).json({ message: "Error while deleting job application" });
   }
 }
-
 module.exports = {
   saveJobApplication,
   findAllJobApplication,
