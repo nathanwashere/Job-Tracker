@@ -11,20 +11,16 @@ function Login() {
     e.preventDefault();
     try {
       const data = await loginUser();
-      toast.success("User has successfully logged in!", {
-        autoClose: 1000, // matches the container
-        onClose: () => {
-          setUser({
-            id: data.user._id,
-            firstName: data.user.firstName,
-            lastName: data.user.lastName,
-            email: data.user.email,
-            password: data.user.password,
-            employed: data.user.employed,
-          });
-          navigator("/homepage");
-        },
+      toast.success("User has successfully logged in!");
+      setUser({
+        id: data.user._id,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        email: data.user.email,
+        password: data.user.password,
+        employed: data.user.employed,
       });
+      navigator("/homepage");
     } catch (error) {
       console.error(`Error while logging in user: ${error}`);
       toast.error("Email or password not valid!");

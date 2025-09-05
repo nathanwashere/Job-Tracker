@@ -96,13 +96,31 @@ function Homepage() {
                 Position: {application.position}
                 <br />
                 Status: {application.status}
+                <br />
+                Date of submission: {application.date}
               </h3>
               <button
-                onClick={async () => {
-                  await deleteJobApplication(application._id);
+                onClick={() => {
+                  deleteJobApplication(application._id);
                 }}
               >
                 Delete job application
+              </button>
+              <button
+                onClick={() => {
+                  navigator("/add-Job", {
+                    state: {
+                      jobApplications: {
+                        company: application.company,
+                        position: application.position,
+                        status: application.status,
+                        date: application.date,
+                      },
+                    },
+                  });
+                }}
+              >
+                Edit job application
               </button>
             </div>
           ))}
@@ -121,11 +139,8 @@ function Homepage() {
       <br />
       <button
         onClick={() => {
-          toast.success("You have been logged out!", {
-            onClose: async () => {
-              await logOutUser();
-            },
-          });
+          toast.success("You have been logged out!");
+          logOutUser();
         }}
       >
         Log out

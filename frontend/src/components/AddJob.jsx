@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../App";
-import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 function AddJob() {
   const statuses = [
     { label: "Pending", value: "pending" },
@@ -9,12 +9,24 @@ function AddJob() {
     { label: "Rejected", value: "rejected" },
     { label: "Ghosted", value: "ghosted" },
   ];
-  const { user } = useContext(UserContext);
-  const [company, setCompany] = useState("");
-  const [position, setPosition] = useState("");
-  const [date, setDate] = useState(formatDate(Date.now()));
-  const [status, setStatus] = useState("pending");
+  const location = useLocation();
   const navigator = useNavigate();
+  const { user } = useContext(UserContext);
+  const { jobApplications } = location.state || {};
+  const [company, setCompany] = useState(
+    jobApplications ? jobApplications.company : ""
+  );
+  const [position, setPosition] = useState(
+    jobApplications ? jobApplications.position : ""
+  );
+  const [date, setDate] = useState(
+    jobApplications ? formatDate(jobApplications.date) : formatDate(Date.now())
+  );
+  const [status, setStatus] = useState(
+    jobApplications ? jobApplications.status : "pending"
+  );
+  console.log("TRUE? ", jobApplications);
+
   function formatDate(date) {
     const d = new Date(date);
     let month = "" + (d.getMonth() + 1);
@@ -33,9 +45,8 @@ function AddJob() {
       if (!response.ok) {
         throw new Error(`Error! Failed with status --> ${response.status}`);
       }
-      toast.success("Job application submitted successfully!", {
-        onClose: () => navigator("/homepage"),
-      });
+      toast.success("Job application submitted successfully!");
+      navigator("/homepage");
     } catch (error) {
       toast.error("Failed to submit an application.");
       console.error(`Error while trying to save job application: ${error}`);
@@ -113,7 +124,12 @@ function AddJob() {
             />
           </label>
           <br />
-          <button type="submit">Enter</button>
+          {/* <button type="submit">Enter</button> */}
+          {jobApplications ? (
+            <button>Save</button>
+          ) : (
+            <button type="submit">Enter</button>
+          )}
           <button
             type="button"
             onClick={() => {

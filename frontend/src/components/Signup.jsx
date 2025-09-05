@@ -16,21 +16,16 @@ function Signup() {
     try {
       const data = await createUser();
 
-      toast.success("User has successfully signed up!", {
-        autoClose: 2000,
-        hideProgressBar: true,
-        onClose: () => {
-          setUser({
-            id: data.user._id,
-            firstName: data.user.firstName,
-            lastName: data.user.lastName,
-            email: data.user.email,
-            passsword: data.user.password,
-            employed: data.user.employed,
-          });
-          navigator("/homepage");
-        },
+      toast.success("User has successfully signed up!");
+      setUser({
+        id: data.user._id,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        email: data.user.email,
+        passsword: data.user.password,
+        employed: data.user.employed,
       });
+      navigator("/homepage");
     } catch (error) {
       console.error(`Error while trying to sign up : ${error}`);
       toast.error("Wrong input!");
