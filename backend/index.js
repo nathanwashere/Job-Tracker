@@ -19,7 +19,15 @@ app.use(
 app.use("/auth", userRoutes);
 app.use("/job-application", jobApplicationRoutes);
 
-app.listen(PORT, () => {
-  connectDB();
-  console.log(`Listening on port ${PORT}`);
-});
+async function startServer() {
+  try {
+    await connectDB();
+    app.listen(PORT, async () => {
+      console.log(`Listening on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error(`Error while triny got connect to server --> ${error}`);
+    process.exit(1);
+  }
+}
+startServer();

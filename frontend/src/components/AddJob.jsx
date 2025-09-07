@@ -3,6 +3,9 @@ import { UserContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 function AddJob() {
+  //#region Const variables
+
+  const PORT = 3000;
   const statuses = [
     { label: "Pending", value: "pending" },
     { label: "Accepted", value: "accepted" },
@@ -13,6 +16,9 @@ function AddJob() {
   const navigator = useNavigate();
   const { user } = useContext(UserContext);
   const { jobApplications } = location.state || {};
+  const [idJobApplication, setIdJobApplication] = useState(
+    jobApplications.id || null
+  );
   const [company, setCompany] = useState(
     jobApplications ? jobApplications.company : ""
   );
@@ -25,8 +31,7 @@ function AddJob() {
   const [status, setStatus] = useState(
     jobApplications ? jobApplications.status : "pending"
   );
-  console.log("TRUE? ", jobApplications);
-
+  //#endregion
   function formatDate(date) {
     const d = new Date(date);
     let month = "" + (d.getMonth() + 1);
@@ -55,7 +60,7 @@ function AddJob() {
   async function createJobApplication() {
     try {
       const response = await fetch(
-        "http://localhost:3000/job-application/create",
+        `http://localhost:${PORT}/job-application/create`,
         {
           method: "POST",
           body: JSON.stringify({ company, position, date, status }),
@@ -68,6 +73,33 @@ function AddJob() {
     } catch (error) {
       console.error(`Error while trying to save job application: ${error}`);
       throw error;
+    }
+  }
+  async function editJobApplication() {
+    try {
+      const response = await fetch(
+        `http://localhost:${PORT}/job-application/edit`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            company,
+            position,
+            date,
+            status,
+            idJobApplication,
+          }),
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      toast.success("Job application edited successfully!");
+      navigator("/homepage");
+    } catch (error) {
+      toast.error("Failed to edit job application!");
+      console.error(`Error while trying to edit job application --> ${error}`);
     }
   }
   return (
@@ -124,9 +156,10 @@ function AddJob() {
             />
           </label>
           <br />
-          {/* <button type="submit">Enter</button> */}
           {jobApplications ? (
-            <button>Save</button>
+            <button type="button" onClick={editJobApplication}>
+              Save
+            </button>
           ) : (
             <button type="submit">Enter</button>
           )}

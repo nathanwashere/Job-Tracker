@@ -8,6 +8,17 @@ function Homepage() {
   const { user, setUser } = useContext(UserContext);
   const navigator = useNavigate();
   const [jobApplications, setJobApplications] = useState([]);
+  function formatDate(date) {
+    const d = new Date(date);
+    let month = "" + (d.getMonth() + 1);
+    let day = "" + d.getDate();
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  }
   async function getJobApplications() {
     try {
       const applications = await getJobApplicationsForCurrentUser();
@@ -97,7 +108,7 @@ function Homepage() {
                 <br />
                 Status: {application.status}
                 <br />
-                Date of submission: {application.date}
+                Date of submission: {formatDate(application.date)}
               </h3>
               <button
                 onClick={() => {
@@ -115,6 +126,7 @@ function Homepage() {
                         position: application.position,
                         status: application.status,
                         date: application.date,
+                        id: application._id,
                       },
                     },
                   });

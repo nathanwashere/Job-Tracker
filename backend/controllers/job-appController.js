@@ -65,8 +65,35 @@ async function deleteJobApplication(req, res) {
     res.status(500).json({ message: "Error while deleting job application" });
   }
 }
+async function editJobApplication(req, res) {
+  try {
+    const { company, position, status, date, idJobApplication } = req.body;
+    const updatedJobApplication = await JobApplication.findByIdAndUpdate(
+      idJobApplication,
+      {
+        $set: {
+          company: company,
+          status: status,
+          position: position,
+          date: date,
+        },
+      },
+      { new: true }
+    );
+    if (!updatedJobApplication) {
+      return res.status(404).json({ message: "Job application not found" });
+    }
+    res.json(updatedJobApplication);
+  } catch (error) {
+    console.log(`Error while editing job application in back end: ${error}`);
+    res
+      .status(500)
+      .json({ message: "Error while editing job application in back end!" });
+  }
+}
 module.exports = {
   saveJobApplication,
   findAllJobApplication,
   deleteJobApplication,
+  editJobApplication,
 };
