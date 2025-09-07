@@ -1,0 +1,84 @@
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200..900&display=swap");
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* two columns of equal width */
+  gap: 20px; /* space between inputs */
+  max-width: 700px; /* optional, keeps form from stretching too wide */
+  margin: 0 auto; /* center the form horizontally */
+  font-family: "Nunito Sans";
+}
+.form-wrapper {
+  max-width: 700px; /* control width */
+  margin: 90px auto; /* center horizontally + add space from top */
+  padding: 20px;
+  background-color: white; /* white background */
+  border-radius: 12px; /* rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  border: 1px solid #eee; /* light border */
+}
+.form label {
+  display: flex;
+  flex-direction: column; /* label text above input */
+  font-weight: 600;
+}
+.form input,
+.form select {
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%; /* makes them fill the grid cell */
+  box-sizing: border-box;
+}
+
+.form input[type="date"] {
+  font-family: "Nunito Sans", sans-serif; /* or any font you imported */
+  font-size: 14px;
+  font-weight: 600;
+  color: #333; /* text color */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.form-actions {
+  grid-column: span 2; /* buttons span across both columns */
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  gap: 20px; /* space between buttons */
+}
+.form-actions button {
+  flex: 1; /* makes both expand equally */
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.form-actions button:first-child {
+  background-color: black;
+  color: white;
+}
+.form-actions button:last-child {
+  background-color: #e74c3c;
+  color: white;
+}
+/* Status-specific colors */
+.total {
+  background-color: #34495e;
+} /* dark gray/blue */
+.pending {
+  background-color: #f1c40f;
+} /* yellow */
+.ghosted {
+  background-color: #95a5a6;
+} /* gray */
+.accepted {
+  background-color: #2ecc71;
+} /* green */
+.rejected {
+  background-color: #e74c3c;
+} /* red */

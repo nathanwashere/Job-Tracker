@@ -2,7 +2,7 @@ const JobApplication = require("../mongo schema/JobApplication");
 const User = require("../mongo schema/User");
 async function saveJobApplication(req, res) {
   try {
-    const { company, position, date, status } = req.body;
+    const { company, position, date, status, location, jobType } = req.body;
     const userId = req.user.id;
     const userFound = await User.findOne({ _id: userId });
     if (!userFound) {
@@ -15,7 +15,9 @@ async function saveJobApplication(req, res) {
       position,
       date,
       status,
+      location,
       userId: userFound._id,
+      jobType,
     });
     await newJobApplication.save();
     res.status(201).json({
@@ -67,7 +69,15 @@ async function deleteJobApplication(req, res) {
 }
 async function editJobApplication(req, res) {
   try {
-    const { company, position, status, date, idJobApplication } = req.body;
+    const {
+      company,
+      position,
+      status,
+      date,
+      idJobApplication,
+      location,
+      jobType,
+    } = req.body;
     const updatedJobApplication = await JobApplication.findByIdAndUpdate(
       idJobApplication,
       {
@@ -76,6 +86,8 @@ async function editJobApplication(req, res) {
           status: status,
           position: position,
           date: date,
+          location: location,
+          jobType: jobType,
         },
       },
       { new: true }

@@ -16,11 +16,20 @@ const jobApplicationSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
+    default: "pending",
     enum: ["pending", "accepted", "rejected", "ghosted"],
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  jobType: {
+    type: String,
     required: true,
   },
 });

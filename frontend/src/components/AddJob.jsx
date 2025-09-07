@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { UserContext } from "../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import Select from "react-select";
+import "../style/AddJob.css";
 function AddJob() {
   //#region Const variables
 
@@ -12,12 +14,12 @@ function AddJob() {
     { label: "Rejected", value: "rejected" },
     { label: "Ghosted", value: "ghosted" },
   ];
-  const location = useLocation();
+  const uLocation = useLocation();
   const navigator = useNavigate();
   const { user } = useContext(UserContext);
-  const { jobApplications } = location.state || {};
+  const { jobApplications } = uLocation.state || {};
   const [idJobApplication, setIdJobApplication] = useState(
-    jobApplications.id || null
+    jobApplications ? jobApplications.id : null
   );
   const [company, setCompany] = useState(
     jobApplications ? jobApplications.company : ""
@@ -29,9 +31,16 @@ function AddJob() {
     jobApplications ? formatDate(jobApplications.date) : formatDate(Date.now())
   );
   const [status, setStatus] = useState(
-    jobApplications ? jobApplications.status : "pending"
+    jobApplications ? jobApplications.status : null
+  );
+  const [location, setLocation] = useState(
+    jobApplications ? jobApplications.location : ""
+  );
+  const [jobType, setJobType] = useState(
+    jobApplications ? jobApplications.jobType : ""
   );
   //#endregion
+  //#region Functions
   function formatDate(date) {
     const d = new Date(date);
     let month = "" + (d.getMonth() + 1);
@@ -63,7 +72,14 @@ function AddJob() {
         `http://localhost:${PORT}/job-application/create`,
         {
           method: "POST",
-          body: JSON.stringify({ company, position, date, status }),
+          body: JSON.stringify({
+            company,
+            position,
+            date,
+            status: status || "pending",
+            location,
+            jobType,
+          }),
           headers: { "Content-Type": "application/json" },
           credentials: "include",
         }
@@ -85,8 +101,10 @@ function AddJob() {
             company,
             position,
             date,
-            status,
+            status: status || null,
             idJobApplication,
+            location,
+            jobType,
           }),
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -102,66 +120,81 @@ function AddJob() {
       console.error(`Error while trying to edit job application --> ${error}`);
     }
   }
+  //#endregion
   return (
-    <div>
-      <div>
-        <form onSubmit={handleJobApplication}>
-          <label>
-            Company name:
-            <input
-              type="text"
-              placeholder="Company name"
-              onChange={(e) => {
-                setCompany(e.target.value);
-              }}
-              value={company}
-            />
-          </label>
-          <br />
-          <label>
-            Position at the company:
-            <input
-              type="text"
-              placeholder="Poistion"
-              onChange={(e) => {
-                setPosition(e.target.value);
-              }}
-              value={position}
-            />
-          </label>
-          <br />
-          <label>
-            Status of application:
-            <select
-              onChange={(e) => {
-                setStatus(e.target.value);
-              }}
-              value={status}
-            >
-              <option value="">--Select a status--</option>
-              {statuses.map((status) => (
-                <option key={status.value} value={status.value}>
-                  {status.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <br />
-          <label>
-            Date of submission
-            <input
-              type="date"
-              onChange={(e) => setDate(e.target.value)}
-              value={date}
-            />
-          </label>
-          <br />
+    <div className="form-wrapper">
+      <form onSubmit={handleJobApplication} className="form">
+        <label>
+          Company *
+          <input
+            type="text"
+            placeholder="Company name"
+            onChange={(e) => {
+              setCompany(e.target.value);
+            }}
+            value={company}
+          />
+        </label>
+        <label>
+          Position *
+          <input
+            type="text"
+            placeholder="Job title"
+            onChange={(e) => {
+              setPosition(e.target.value);
+            }}
+            value={position}
+          />
+        </label>
+        <label>
+          Status
+          <Select
+            options={statuses} // array of { value, label }
+            value={statuses.find((option) => option.value === status) || null} // display selected
+            onChange={(selectedOption) =>
+              setStatus(selectedOption ? selectedOption.value : null)
+            }
+            placeholder="Select a status"
+            isClearable
+          />
+        </label>
+        <label>
+          Date Applied
+          <input
+            type="date"
+            onChange={(e) => setDate(e.target.value)}
+            value={date}
+          />
+        </label>
+        <label>
+          Location
+          <input
+            type="string"
+            onChange={(e) => {
+              setLocation(e.target.value);
+            }}
+            value={location}
+            placeholder="City,Stae or Remote"
+          ></input>
+        </label>
+        <label>
+          Job Type
+          <input
+            type="string"
+            onChange={(e) => {
+              setJobType(e.target.value);
+            }}
+            value={jobType}
+            placeholder="Full time, Part time"
+          ></input>
+        </label>
+        <div className="form-actions">
           {jobApplications ? (
             <button type="button" onClick={editJobApplication}>
-              Save
+              Save application
             </button>
           ) : (
-            <button type="submit">Enter</button>
+            <button type="submit">Add application</button>
           )}
           <button
             type="button"
@@ -169,10 +202,10 @@ function AddJob() {
               navigator("/homepage");
             }}
           >
-            Back to homepage
+            Cancel
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 }

@@ -1,13 +1,27 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import { Briefcase } from "lucide-react"; // icon
 import "react-toastify/dist/ReactToastify.css";
 import "../style/Homepage.css";
 function Homepage() {
   const { user, setUser } = useContext(UserContext);
   const navigator = useNavigate();
   const [jobApplications, setJobApplications] = useState([]);
+  const totalApplications = jobApplications.length;
+  const pendingCount = jobApplications.filter(
+    (app) => app.status === "pending"
+  ).length;
+  const acceptedCount = jobApplications.filter(
+    (app) => app.status === "accepted"
+  ).length;
+  const ghostedCount = jobApplications.filter(
+    (app) => app.status === "ghosted"
+  ).length;
+  const rejectedCount = jobApplications.filter(
+    (app) => app.status === "rejected"
+  ).length;
   function formatDate(date) {
     const d = new Date(date);
     let month = "" + (d.getMonth() + 1);
@@ -93,11 +107,77 @@ function Homepage() {
   }, []);
   return (
     <div>
-      <h1>
-        Welcome {user.firstName} {user.lastName}!
-      </h1>
+      <div className="title-box">
+        <h1 className="title">
+          <Briefcase className="title-icon" />
+          Job Tracker
+        </h1>
+        <div className="title-actions">
+          <button
+            className="title-button"
+            onClick={() => {
+              navigator("/add-job");
+            }}
+          >
+            <span className="icon-button">+</span>
+            Add application
+          </button>
+          <button
+            className="title-button logout-button"
+            onClick={() => {
+              toast.success("You have been logged out!");
+              logOutUser();
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+      <hr className="title-divider" />
       {jobApplications.length ? (
         <>
+          <div className="summary-cards">
+            <div className="summary-card">
+              <div className="card-top">
+                <span>Total Applications</span>
+                <i className="card-icon">📦</i>
+              </div>
+              <div className="card-number">{totalApplications}</div>
+            </div>
+
+            <div className="summary-card">
+              <div className="card-top">
+                <span>Pending</span>
+                <i className="card-icon">⏳</i>
+              </div>
+              <div className="card-number">{pendingCount}</div>
+            </div>
+
+            <div className="summary-card">
+              <div className="card-top">
+                <span>Rejected</span>
+                <i className="card-icon">✅</i>
+              </div>
+              <div className="card-number">{rejectedCount}</div>
+            </div>
+
+            <div className="summary-card">
+              <div className="card-top">
+                <span>Accepted</span>
+                <i className="card-icon">🎉</i>
+              </div>
+              <div className="card-number">{acceptedCount}</div>
+            </div>
+
+            <div className="summary-card">
+              <div className="card-top">
+                <span>Ghosted</span>
+                <i className="card-icon">🎉</i>
+              </div>
+              <div className="card-number">{ghostedCount}</div>
+            </div>
+          </div>
+
           <h2>Your job applications are:</h2>
           {jobApplications.map((application) => (
             <div key={application._id} className="job-application-container">
@@ -109,6 +189,10 @@ function Homepage() {
                 Status: {application.status}
                 <br />
                 Date of submission: {formatDate(application.date)}
+                <br />
+                Location: {application.location}
+                <br />
+                Job type: {application.jobType}
               </h3>
               <button
                 onClick={() => {
@@ -127,6 +211,8 @@ function Homepage() {
                         status: application.status,
                         date: application.date,
                         id: application._id,
+                        location: application.location,
+                        jobType: application.jobType,
                       },
                     },
                   });
@@ -138,25 +224,23 @@ function Homepage() {
           ))}
         </>
       ) : (
-        <h2>You have no job applications yet!</h2>
+        <div className="no-job-yet-container">
+          <h1>
+            <Briefcase className="no-job-icon" />
+          </h1>
+          <h2>No job applications yet</h2>
+          <p>
+            Start tracking your job search by adding your first application.
+          </p>
+          <button
+            onClick={() => {
+              navigator("/add-job");
+            }}
+          >
+            Add your first job application
+          </button>
+        </div>
       )}
-      <button
-        onClick={() => {
-          navigator("/add-job");
-        }}
-      >
-        Add a job application
-      </button>
-
-      <br />
-      <button
-        onClick={() => {
-          toast.success("You have been logged out!");
-          logOutUser();
-        }}
-      >
-        Log out
-      </button>
     </div>
   );
 }

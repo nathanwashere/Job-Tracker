@@ -1,0 +1,153 @@
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200..900&display=swap");
+
+/* Reset default margin/padding */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+/* Container for title and button */
+.title-box {
+  display: flex; /* use flexbox */
+  align-items: center; /* vertically center children */
+  justify-content: space-between; /* title left, button right */
+  padding: 0 50px; /* horizontal spacing from edges */
+  height: 80px; /* optional height */
+  width: 100%;
+  box-sizing: border-box;
+}
+/* Title */
+.title {
+  font-family: "Nunito Sans";
+  font-weight: 650;
+  font-size: 32px; /* adjust size as needed */
+  margin: 0; /* remove default margin */
+}
+/* Button */
+.title-button {
+  display: flex; /* allow icon + text alignment */
+  align-items: center; /* vertically center text & icon */
+  padding: 0 15px;
+  height: 40px;
+  font-family: "Nunito Sans";
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  background-color: black;
+  color: white;
+  cursor: pointer; /* optional pointer on hover */
+}
+/* Icon inside button */
+.icon-button {
+  font-size: 20px; /* adjust as needed */
+  margin-right: 8px; /* space between icon & text */
+  position: relative;
+  top: 0; /* adjust if needed to align perfectly */
+}
+.title-divider {
+  border: none; /* remove default border */
+  height: 1px; /* very thin line */
+  background-color: lightgray; /* subtle color */
+  margin: 0; /* optional spacing */
+}
+.title-icon {
+  width: 28px; /* adjust icon size */
+  height: 28px;
+  margin-right: 10px; /* space between icon and text */
+  vertical-align: middle; /* aligns icon with text vertically */
+  position: relative;
+  top: -6px;
+}
+.title-actions {
+  display: flex;
+  gap: 15px; /* spacing between buttons */
+  margin-right: 50px;
+}
+.logout-button {
+  background-color: #e74c3c; /* red for logout */
+}
+.no-job-yet-container {
+  margin-top: 30px;
+  font-family: "Nunito Sans";
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+}
+.no-job-icon {
+  width: 80px; /* adjust icon size */
+  height: 80px;
+  color: #555; /* optional: change icon color */
+}
+.no-job-yet-container h2 {
+  margin: 0;
+  font-weight: 600;
+}
+.no-job-yet-container p {
+  margin: 0;
+  color: #666; /* optional: softer text color */
+}
+.no-job-yet-container button {
+  padding: 10px 20px;
+  font-family: "Nunito Sans";
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+.summary-cards {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.summary-cards {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+  flex-wrap: wrap; /* wrap if very small screens */
+}
+
+.summary-card {
+  flex: 1 1 0;
+  min-width: 150px;
+  width: 300px;
+  height: 120px; /* fixed height */
+  padding: 15px 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* top for text+icon, bottom for number */
+  font-family: "Nunito Sans";
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-top span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-icon {
+  font-size: 20px;
+  color: #555;
+}
+
+.card-number {
+  font-size: 28px;
+  font-weight: bold;
+  color: #111;
+}
