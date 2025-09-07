@@ -2,7 +2,11 @@ import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import { toast } from "react-toastify";
-import { Briefcase } from "lucide-react"; // icon
+import { Briefcase } from "lucide-react";
+import { Clock } from "lucide-react";
+import { CircleCheckBig } from "lucide-react";
+import { CircleX } from "lucide-react";
+import { MessageCircleQuestionMark } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
 import "../style/Homepage.css";
 function Homepage() {
@@ -22,6 +26,7 @@ function Homepage() {
   const rejectedCount = jobApplications.filter(
     (app) => app.status === "rejected"
   ).length;
+  const [filter, setFilter] = useState("all"); // <- define filter state
   function formatDate(date) {
     const d = new Date(date);
     let month = "" + (d.getMonth() + 1);
@@ -136,92 +141,135 @@ function Homepage() {
       <hr className="title-divider" />
       {jobApplications.length ? (
         <>
-          <div className="summary-cards">
-            <div className="summary-card">
-              <div className="card-top">
-                <span>Total Applications</span>
-                <i className="card-icon">📦</i>
+          <div className="summary-and-filters">
+            <div className="summary-cards">
+              <div className="summary-card">
+                <div className="card-top">
+                  <span>Total Applications</span>
+                  <i className="card-icon">
+                    <Briefcase style={{ color: "blue" }} size={17} />
+                  </i>
+                </div>
+                <div className="card-number">{totalApplications}</div>
               </div>
-              <div className="card-number">{totalApplications}</div>
-            </div>
 
-            <div className="summary-card">
-              <div className="card-top">
-                <span>Pending</span>
-                <i className="card-icon">⏳</i>
+              <div className="summary-card">
+                <div className="card-top">
+                  <span>Pending</span>
+                  <i className="card-icon">
+                    <Clock style={{ color: "orange" }} size={17} />
+                  </i>
+                </div>
+                <div className="card-number">{pendingCount}</div>
               </div>
-              <div className="card-number">{pendingCount}</div>
-            </div>
 
-            <div className="summary-card">
-              <div className="card-top">
-                <span>Rejected</span>
-                <i className="card-icon">✅</i>
+              <div className="summary-card">
+                <div className="card-top">
+                  <span>Rejected</span>
+                  <i className="card-icon">
+                    <CircleX style={{ color: "red" }} size={17} />
+                  </i>
+                </div>
+                <div className="card-number">{rejectedCount}</div>
               </div>
-              <div className="card-number">{rejectedCount}</div>
-            </div>
 
-            <div className="summary-card">
-              <div className="card-top">
-                <span>Accepted</span>
-                <i className="card-icon">🎉</i>
+              <div className="summary-card">
+                <div className="card-top">
+                  <span>Accepted</span>
+                  <i className="card-icon">
+                    <CircleCheckBig style={{ color: "green" }} size={17} />
+                  </i>
+                </div>
+                <div className="card-number">{acceptedCount}</div>
               </div>
-              <div className="card-number">{acceptedCount}</div>
-            </div>
 
-            <div className="summary-card">
-              <div className="card-top">
-                <span>Ghosted</span>
-                <i className="card-icon">🎉</i>
+              <div className="summary-card">
+                <div className="card-top">
+                  <span>Ghosted</span>
+                  <i className="card-icon">
+                    <MessageCircleQuestionMark
+                      style={{ color: "black" }}
+                      size={17}
+                    />
+                  </i>
+                </div>
+                <div className="card-number">{ghostedCount}</div>
               </div>
-              <div className="card-number">{ghostedCount}</div>
             </div>
           </div>
 
-          <h2>Your job applications are:</h2>
-          {jobApplications.map((application) => (
-            <div key={application._id} className="job-application-container">
-              <h3>
-                Company: {application.company}
-                <br />
-                Position: {application.position}
-                <br />
-                Status: {application.status}
-                <br />
-                Date of submission: {formatDate(application.date)}
-                <br />
-                Location: {application.location}
-                <br />
-                Job type: {application.jobType}
-              </h3>
-              <button
-                onClick={() => {
-                  deleteJobApplication(application._id);
-                }}
-              >
-                Delete job application
-              </button>
-              <button
-                onClick={() => {
-                  navigator("/add-Job", {
-                    state: {
-                      jobApplications: {
-                        company: application.company,
-                        position: application.position,
-                        status: application.status,
-                        date: application.date,
-                        id: application._id,
-                        location: application.location,
-                        jobType: application.jobType,
-                      },
-                    },
-                  });
-                }}
-              >
-                Edit job application
-              </button>
-            </div>
-          ))}
+          <div className="filter-buttons">
+            <button
+              className={filter === "all" ? "active" : ""}
+              onClick={() => setFilter("all")}
+            >
+              All ({totalApplications})
+            </button>
+            <button
+              className={filter === "pending" ? "active" : ""}
+              onClick={() => setFilter("pending")}
+            >
+              Pending ({pendingCount})
+            </button>
+            <button
+              className={filter === "ghosted" ? "active" : ""}
+              onClick={() => setFilter("ghosted")}
+            >
+              Ghosted ({ghostedCount})
+            </button>
+            <button
+              className={filter === "accepted" ? "active" : ""}
+              onClick={() => setFilter("accepted")}
+            >
+              Accepted ({acceptedCount})
+            </button>
+            <button
+              className={filter === "rejected" ? "active" : ""}
+              onClick={() => setFilter("rejected")}
+            >
+              Rejected ({rejectedCount})
+            </button>
+          </div>
+
+          <div className="applications-list">
+            {jobApplications
+              .filter(
+                (app) => filter === "all" || app.status.toLowerCase() === filter
+              )
+              .map((app) => (
+                <div key={app.id} className="application-card">
+                  <div className="app-info">
+                    <h3>
+                      {app.position} @ {app.company}
+                    </h3>
+                    <p>Applied on {formatDate(app.date)}</p>
+                    <p>Status: {app.status}</p>
+                  </div>
+                  <div className="app-actions">
+                    <button
+                      onClick={() =>
+                        navigator("/add-job", {
+                          state: {
+                            jobApplications: {
+                              company: app.company,
+                              position: app.position,
+                              status: app.status,
+                              date: app.date,
+                              id: app._id,
+                            },
+                          },
+                        })
+                      }
+                    >
+                      Edit
+                    </button>
+                    <button onClick={() => deleteJobApplication(app.id)}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </div>
         </>
       ) : (
         <div className="no-job-yet-container">
