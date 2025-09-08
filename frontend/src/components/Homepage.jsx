@@ -55,7 +55,7 @@ function Homepage() {
   }
   async function getJobApplicationsForCurrentUser() {
     try {
-      const response = await fetch(`${apiUrl}/find-all`, {
+      const response = await fetch(`${apiUrl}/job-application/find-all`, {
         credentials: "include", // important for cookies
       });
       if (!response.ok) {

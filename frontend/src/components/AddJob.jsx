@@ -77,7 +77,7 @@ function AddJob() {
             company,
             position,
             date,
-            status: status || "pending",
+            status: status || "Pending",
             location,
             jobType,
           }),
