@@ -42,7 +42,7 @@ const jobApplicationRoutes = require("./routes/jobAppRoute.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const corsOrigin = "https://job-tracker-khaki-seven.vercel.app/";
+const corsOrigin = "https://job-tracker-khaki-seven.vercel.app";
 console.log("CORS ORIGIN: ", corsOrigin);
 console.log("PORT: ", PORT);
 
