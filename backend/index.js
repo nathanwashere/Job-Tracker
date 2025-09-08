@@ -42,7 +42,9 @@ const jobApplicationRoutes = require("./routes/jobAppRoute.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:5173";
+const corsOrigin =
+  "https://job-tracker-hpj8tyirz-nathans-projects-34f35077.vercel.app";
+console.log("CORS ORIGIN: ", corsOrigin);
 
 app.use(cookieParser());
 app.use(express.json());
