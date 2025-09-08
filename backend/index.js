@@ -42,8 +42,7 @@ const jobApplicationRoutes = require("./routes/jobAppRoute.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const corsOrigin =
-  "https://job-tracker-hpj8tyirz-nathans-projects-34f35077.vercel.app";
+const corsOrigin = "https://job-tracker-khaki-seven.vercel.app/";
 console.log("CORS ORIGIN: ", corsOrigin);
 console.log("PORT: ", PORT);
 
@@ -62,7 +61,7 @@ app.use("/job-application", jobApplicationRoutes);
 async function startServer() {
   try {
     await connectDB();
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server listening on port ${PORT}`);
     });
   } catch (error) {
