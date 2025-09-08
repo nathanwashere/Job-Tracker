@@ -87,6 +87,7 @@ async function loginUser(req, res) {
         httpOnly: true,
         maxAge: oneHour,
         secure: process.env.NODE_ENV === "production",
+        sameSite: "None",
       })
       .status(200)
       .json({
