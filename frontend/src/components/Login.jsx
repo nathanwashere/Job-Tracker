@@ -6,7 +6,7 @@ import { Briefcase, Mail, Lock } from "lucide-react";
 import "../style/Login.css";
 
 function Login() {
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiUrl = "https://job-tracker-yqn9.onrender.com";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigator = useNavigate();

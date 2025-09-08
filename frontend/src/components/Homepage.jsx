@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../style/Homepage.css";
 function Homepage() {
   //#region Const variables
+  const apiUrl = "https://job-tracker-yqn9.onrender.com";
   const { user, setUser } = useContext(UserContext);
   const navigator = useNavigate();
   const [jobApplications, setJobApplications] = useState([]);
@@ -54,12 +55,9 @@ function Homepage() {
   }
   async function getJobApplicationsForCurrentUser() {
     try {
-      const response = await fetch(
-        `http://localhost:3000/job-application/find-all`,
-        {
-          credentials: "include", // important for cookies
-        }
-      );
+      const response = await fetch(`${apiUrl}/find-all`, {
+        credentials: "include", // important for cookies
+      });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }
