@@ -46,14 +46,14 @@ const corsOrigin = "https://job-tracker-khaki-seven.vercel.app";
 console.log("CORS ORIGIN: ", corsOrigin);
 console.log("PORT: ", PORT);
 
-app.use(cookieParser());
-app.use(express.json());
 app.use(
   cors({
     origin: corsOrigin,
     credentials: true,
   })
 );
+app.use(cookieParser());
+app.use(express.json());
 
 app.use("/auth", userRoutes);
 app.use("/job-application", jobApplicationRoutes);
