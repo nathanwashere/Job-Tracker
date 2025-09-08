@@ -57,16 +57,23 @@ async function deleteJobApplication(req, res) {
   try {
     const { jobId } = req.params;
     const result = await JobApplication.findByIdAndDelete(jobId);
+
     if (!result) {
       return res.status(404).json({ message: "Job application not found." });
     }
+
     return res
       .status(200)
       .json({ message: "Job application deleted successfully." });
   } catch (error) {
-    res.status(500).json({ message: "Error while deleting job application" });
+    console.error("Delete error:", error.message);
+    return res.status(500).json({
+      message: "Error while deleting job application from backend!",
+      error: error.message,
+    });
   }
 }
+
 async function editJobApplication(req, res) {
   try {
     const {

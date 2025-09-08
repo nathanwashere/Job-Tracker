@@ -109,15 +109,15 @@ body {
 }
 .summary-cards {
   display: flex;
-  justify-content: center; /* center all cards horizontally */
+  justify-content: flex-start; /* start from the left */
   gap: 15px; /* space between cards */
-  margin: 20px 0;
+  margin: 20px 50px 10px 50px;
   flex-wrap: wrap; /* wrap if screen is too small */
 }
 
 .summary-card {
   min-width: 120px; /* smaller cards */
-  width: 150px; /* fixed width for compactness */
+  width: 100px; /* fixed width for compactness */
   height: 100px; /* smaller height */
   padding: 10px 15px; /* less padding */
   background-color: white;
@@ -156,8 +156,7 @@ body {
   display: flex;
   gap: 10px;
   justify-content: flex-start; /* align left */
-  margin-left: calc((100% - 5 * 150px - 4 * 15px) / 2);
-  /* this offsets buttons to start under the first card */
+  margin: 0 50px 10px 50px; /* align with summary cards */
   flex-wrap: wrap;
 }
 
@@ -186,31 +185,85 @@ body {
   flex-wrap: wrap;
   gap: 15px;
   justify-content: center;
-  margin-top: 10px;
+  margin: 10px 50px 40px 50px; /* align grid with cards/filters */
 }
 
 .application-card {
   display: flex;
-  justify-content: space-between;
-  flex-direction: column; /* content stacked inside card */
-  align-items: center;
-  width: 300px; /* thinner card */
-  min-width: 250px; /* responsive */
-  padding: 15px 20px;
+  flex-direction: column;
+  width: 320px; /* slightly bigger */
+  min-width: 320px;
+  padding: 18px 18px 12px 18px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.app-info h3 {
-  margin: 0 0 5px 0;
-  font-size: 16px;
+/* card header with title/company left and status on right */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
 }
 
-.app-info p {
-  margin: 2px 0;
+.position-name {
+  font-family: "Nunito Sans";
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.company-name {
+  font-family: "Nunito Sans";
   font-size: 14px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.status-pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  align-self: flex-start;
+}
+.status-pending {
+  background-color: #fff3cd;
+  color: #7a5b00;
+}
+.status-accepted {
+  background-color: #d1f7d6;
+  color: #0f6d27;
+}
+.status-rejected {
+  background-color: #fde2e1;
+  color: #8f1d1a;
+}
+.status-ghosted {
+  background-color: #eaeaea;
+  color: #444;
+}
+
+.app-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: #555;
+  font-size: 14px;
+}
+
+.app-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 .app-actions button {

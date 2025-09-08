@@ -9,10 +9,10 @@ function AddJob() {
 
   const PORT = 3000;
   const statuses = [
-    { label: "Pending", value: "pending" },
-    { label: "Accepted", value: "accepted" },
-    { label: "Rejected", value: "rejected" },
-    { label: "Ghosted", value: "ghosted" },
+    { label: "Pending", value: "Pending" },
+    { label: "Accepted", value: "Accepted" },
+    { label: "Rejected", value: "Rejected" },
+    { label: "Ghosted", value: "Ghosted" },
   ];
   const uLocation = useLocation();
   const navigator = useNavigate();

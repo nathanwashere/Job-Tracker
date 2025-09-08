@@ -4,29 +4,33 @@ import { UserContext } from "../App";
 import { toast } from "react-toastify";
 import { Briefcase } from "lucide-react";
 import { Clock } from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 import { CircleCheckBig } from "lucide-react";
 import { CircleX } from "lucide-react";
 import { MessageCircleQuestionMark } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
 import "../style/Homepage.css";
 function Homepage() {
+  //#region Const variables
   const { user, setUser } = useContext(UserContext);
   const navigator = useNavigate();
   const [jobApplications, setJobApplications] = useState([]);
   const totalApplications = jobApplications.length;
   const pendingCount = jobApplications.filter(
-    (app) => app.status === "pending"
+    (app) => app.status === "Pending"
   ).length;
   const acceptedCount = jobApplications.filter(
-    (app) => app.status === "accepted"
+    (app) => app.status === "Accepted"
   ).length;
   const ghostedCount = jobApplications.filter(
-    (app) => app.status === "ghosted"
+    (app) => app.status === "Ghosted"
   ).length;
   const rejectedCount = jobApplications.filter(
-    (app) => app.status === "rejected"
+    (app) => app.status === "Rejected"
   ).length;
   const [filter, setFilter] = useState("all"); // <- define filter state
+  //#endregion
+  //#region Functions
   function formatDate(date) {
     const d = new Date(date);
     let month = "" + (d.getMonth() + 1);
@@ -110,6 +114,7 @@ function Homepage() {
   useEffect(() => {
     getJobApplications();
   }, []);
+  //#endregion
   return (
     <div>
       <div className="title-box">
@@ -237,14 +242,40 @@ function Homepage() {
                 (app) => filter === "all" || app.status.toLowerCase() === filter
               )
               .map((app) => (
-                <div key={app.id} className="application-card">
-                  <div className="app-info">
-                    <h3>
-                      {app.position} @ {app.company}
-                    </h3>
-                    <p>Applied on {formatDate(app.date)}</p>
-                    <p>Status: {app.status}</p>
+                <div key={app._id} className="application-card">
+                  <div className="app-header">
+                    <div className="app-title">
+                      <div className="position-name">{app.position}</div>
+                      <div className="company-name">{app.company}</div>
+                    </div>
+                    <span
+                      className={`status-pill status-${(
+                        app.status || ""
+                      ).toLowerCase()}`}
+                    >
+                      {app.status}
+                    </span>
                   </div>
+
+                  <div className="app-meta">
+                    <div className="meta-item">
+                      <Calendar size={16} />
+                      <span>Applied on {formatDate(app.date)}</span>
+                    </div>
+                    {app.location && (
+                      <div className="meta-item">
+                        <MapPin size={16} />
+                        <span>{app.location}</span>
+                      </div>
+                    )}
+                    {app.jobType && (
+                      <div className="meta-item">
+                        <Briefcase size={16} />
+                        <span>{app.jobType}</span>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="app-actions">
                     <button
                       onClick={() =>
@@ -256,6 +287,8 @@ function Homepage() {
                               status: app.status,
                               date: app.date,
                               id: app._id,
+                              jobType: app.jobType,
+                              location: app.location,
                             },
                           },
                         })
@@ -263,7 +296,7 @@ function Homepage() {
                     >
                       Edit
                     </button>
-                    <button onClick={() => deleteJobApplication(app.id)}>
+                    <button onClick={() => deleteJobApplication(app._id)}>
                       Delete
                     </button>
                   </div>
