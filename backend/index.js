@@ -55,6 +55,15 @@ app.use(
   })
 );
 
+app.get("/test-db", async (req, res) => {
+  try {
+    const users = await mongoose.connection.db.collection("users").findOne({});
+    res.json({ success: true, user: users });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.use("/auth", userRoutes);
 app.use("/job-application", jobApplicationRoutes);
 
