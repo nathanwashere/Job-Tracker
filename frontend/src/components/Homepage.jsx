@@ -72,13 +72,10 @@ function Homepage() {
   }
   async function deleteJobApplication(id) {
     try {
-      const response = await fetch(
-        `http://localhost:3000/job-application/delete/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${apiUrl}/job-application/delete/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
@@ -97,7 +94,7 @@ function Homepage() {
   }
   async function logOutUser() {
     try {
-      const response = await fetch("http://localhost:3000/auth/logout", {
+      const response = await fetch(`${apiUrl}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

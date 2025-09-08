@@ -10,10 +10,14 @@ import "./App.css";
 
 export const UserContext = createContext();
 function App() {
+  //#region Const variables
+  const apiUrl = "https://job-tracker-yqn9.onrender.com";
   const [user, setUser] = useState(null);
+  //#endregion
+  //#region Functions
   async function loadUser() {
     try {
-      const response = await fetch("http://localhost:3000/auth/me", {
+      const response = await fetch(`${apiUrl}/auth/me`, {
         credentials: "include",
       });
 
@@ -34,6 +38,7 @@ function App() {
   useEffect(() => {
     loadUser();
   }, []);
+  //#endregion
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <BrowserRouter>

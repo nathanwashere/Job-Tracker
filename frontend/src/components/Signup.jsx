@@ -7,6 +7,7 @@ import "../style/Signup.css";
 
 function Signup() {
   //#region Const variables
+  const apiUrl = "https://job-tracker-yqn9.onrender.com";
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,7 +39,7 @@ function Signup() {
 
   async function createUser() {
     try {
-      const response = await fetch("http://localhost:3000/auth/sign-up", {
+      const response = await fetch(`${apiUrl}/auth/sign-up`, {
         method: "POST",
         body: JSON.stringify({
           firstName,

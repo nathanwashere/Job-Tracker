@@ -6,8 +6,8 @@ import Select from "react-select";
 import "../style/AddJob.css";
 function AddJob() {
   //#region Const variables
-
   const PORT = 3000;
+  const apiUrl = "https://job-tracker-yqn9.onrender.com";
   const statuses = [
     { label: "Pending", value: "Pending" },
     { label: "Accepted", value: "Accepted" },
@@ -69,7 +69,8 @@ function AddJob() {
   async function createJobApplication() {
     try {
       const response = await fetch(
-        `http://localhost:${PORT}/job-application/create`,
+        // `http://localhost:${PORT}/job-application/create`,
+        `${apiUrl}/job-application/create`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -94,7 +95,8 @@ function AddJob() {
   async function editJobApplication() {
     try {
       const response = await fetch(
-        `http://localhost:${PORT}/job-application/edit`,
+        // `http://localhost:${PORT}/job-application/edit`,
+        `${apiUrl}/job-application/edit`,
         {
           method: "PATCH",
           body: JSON.stringify({

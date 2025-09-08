@@ -6,11 +6,14 @@ import { Briefcase, Mail, Lock } from "lucide-react";
 import "../style/Login.css";
 
 function Login() {
+  //#region Const variables
   const apiUrl = "https://job-tracker-yqn9.onrender.com";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigator = useNavigate();
   const { setUser } = useContext(UserContext);
+  //#endregion
+  //#region Functions
   useEffect(() => {
     console.log("API URL being used (client-side):", apiUrl);
   }, []);
@@ -52,7 +55,7 @@ function Login() {
       throw error;
     }
   }
-
+  //#endregion
   return (
     <div className="login-container">
       <div className="login-card">
