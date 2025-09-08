@@ -1,4 +1,4 @@
-﻿import { useState, useContext } from "react";
+﻿import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import { UserContext } from "../App";
@@ -6,11 +6,14 @@ import { Briefcase, Mail, Lock } from "lucide-react";
 import "../style/Login.css";
 
 function Login() {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigator = useNavigate();
   const { setUser } = useContext(UserContext);
-  
+  useEffect(() => {
+    console.log("API URL being used (client-side):", apiUrl);
+  }, []);
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -30,10 +33,10 @@ function Login() {
       toast.error("Email or password not valid!");
     }
   };
-  
+
   async function loginUser() {
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
+      const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         body: JSON.stringify({ email: email, password: password }),
         headers: { "Content-Type": "application/json" },
@@ -49,22 +52,30 @@ function Login() {
       throw error;
     }
   }
-  
+
   return (
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
           <div className="login-title">
-            <Briefcase size={32} style={{ marginRight: '10px', verticalAlign: 'middle' }} />
+            <Briefcase
+              size={32}
+              style={{ marginRight: "10px", verticalAlign: "middle" }}
+            />
             Welcome Back
           </div>
-          <p className="login-subtitle">Sign in to continue tracking your job applications</p>
+          <p className="login-subtitle">
+            Sign in to continue tracking your job applications
+          </p>
         </div>
-        
+
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
             <label className="form-label">
-              <Mail size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+              <Mail
+                size={16}
+                style={{ marginRight: "8px", verticalAlign: "middle" }}
+              />
               Email Address
             </label>
             <input
@@ -76,10 +87,13 @@ function Login() {
               required
             />
           </div>
-          
+
           <div className="form-group">
             <label className="form-label">
-              <Lock size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+              <Lock
+                size={16}
+                style={{ marginRight: "8px", verticalAlign: "middle" }}
+              />
               Password
             </label>
             <input
@@ -91,14 +105,14 @@ function Login() {
               required
             />
           </div>
-          
+
           <button type="submit" className="login-button">
             Sign In
           </button>
         </form>
-        
+
         <div className="divider"></div>
-        
+
         <div className="form-links">
           <button
             type="button"
@@ -107,13 +121,13 @@ function Login() {
           >
             Don't have an account? Sign up here
           </button>
-          
+
           <button
             type="button"
             className="link-button"
             onClick={() => navigator("/")}
           >
-             Back to home
+            Back to home
           </button>
         </div>
       </div>
