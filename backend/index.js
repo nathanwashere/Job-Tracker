@@ -45,6 +45,7 @@ const PORT = process.env.PORT || 3000;
 const corsOrigin =
   "https://job-tracker-hpj8tyirz-nathans-projects-34f35077.vercel.app";
 console.log("CORS ORIGIN: ", corsOrigin);
+console.log("PORT: ", PORT);
 
 app.use(cookieParser());
 app.use(express.json());
