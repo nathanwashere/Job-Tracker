@@ -4,6 +4,7 @@ async function saveJobApplication(req, res) {
   try {
     const { company, position, date, status, location, jobType } = req.body;
     const userId = req.user.id;
+    console.log(`User id is : ${userId}`);
     const userFound = await User.findOne({ _id: userId });
     if (!userFound) {
       return res.status(404).json({
