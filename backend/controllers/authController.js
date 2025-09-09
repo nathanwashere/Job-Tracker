@@ -43,7 +43,8 @@ async function createUser(req, res) {
       .cookie("jwt", token, {
         httpOnly: true,
         maxAge: oneHour,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
+        sameSite: "None",
       })
       .status(201)
       .json({
@@ -108,7 +109,8 @@ async function logOutUser(req, res) {
     // clear jwt cookie
     res.clearCookie("jwt", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
+      sameSite: "None",
     });
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
