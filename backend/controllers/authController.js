@@ -86,7 +86,7 @@ async function loginUser(req, res) {
       .cookie("jwt", token, {
         httpOnly: true,
         maxAge: oneHour,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "None",
       })
       .status(200)
