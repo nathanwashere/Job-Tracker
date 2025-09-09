@@ -109,7 +109,7 @@ body {
 }
 .summary-cards {
   display: flex;
-  justify-content: flex-start; /* start from the left */
+  justify-content: center; /* start from the left */
   gap: 15px; /* space between cards */
   margin: 20px 50px 10px 50px;
   flex-wrap: wrap; /* wrap if screen is too small */
@@ -155,7 +155,7 @@ body {
 .filter-buttons {
   display: flex;
   gap: 10px;
-  justify-content: flex-start; /* align left */
+  justify-content: center; /* align left */
   margin: 0 50px 10px 50px; /* align with summary cards */
   flex-wrap: wrap;
 }

@@ -6,8 +6,8 @@ import Select from "react-select";
 import "../style/AddJob.css";
 function AddJob() {
   //#region Const variables
-  const PORT = 3000;
   const apiUrl = "https://job-tracker-yqn9.onrender.com";
+  const apiLocal = "http://localhost:3000";
   const statuses = [
     { label: "Pending", value: "Pending" },
     { label: "Accepted", value: "Accepted" },
@@ -16,7 +16,6 @@ function AddJob() {
   ];
   const uLocation = useLocation();
   const navigator = useNavigate();
-  const { user } = useContext(UserContext);
   const { jobApplications } = uLocation.state || {};
   const [idJobApplication, setIdJobApplication] = useState(
     jobApplications ? jobApplications.id : null
@@ -52,8 +51,23 @@ function AddJob() {
 
     return [year, month, day].join("-");
   }
+  function validateJob({ company, position, location, jobType }) {
+    if (!company.trim()) return "Company is required";
+    if (!position.trim()) return "Position is required";
+    if (!location.trim()) return "Location is required";
+    if (!jobType.trim()) return "Job type is required";
+
+    return null; // ✅ all valid
+  }
   const handleJobApplication = async (e) => {
     e.preventDefault();
+
+    const error = validateJob({ company, position, location, jobType });
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
     try {
       const response = await createJobApplication();
       if (!response.ok) {
@@ -68,23 +82,19 @@ function AddJob() {
   };
   async function createJobApplication() {
     try {
-      const response = await fetch(
-        // `http://localhost:${PORT}/job-application/create`,
-        `${apiUrl}/job-application/create`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            company,
-            position,
-            date,
-            status: status || "Pending",
-            location,
-            jobType,
-          }),
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${apiUrl}/job-application/create`, {
+        method: "POST",
+        body: JSON.stringify({
+          company,
+          position,
+          date,
+          status: status || "Pending",
+          location,
+          jobType,
+        }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
 
       return response;
     } catch (error) {
@@ -94,24 +104,20 @@ function AddJob() {
   }
   async function editJobApplication() {
     try {
-      const response = await fetch(
-        // `http://localhost:${PORT}/job-application/edit`,
-        `${apiUrl}/job-application/edit`,
-        {
-          method: "PATCH",
-          body: JSON.stringify({
-            company,
-            position,
-            date,
-            status: status || null,
-            idJobApplication,
-            location,
-            jobType,
-          }),
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${apiUrl}/job-application/edit`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          company,
+          position,
+          date,
+          status: status || null,
+          idJobApplication,
+          location,
+          jobType,
+        }),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
       if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
       }

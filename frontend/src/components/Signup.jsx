@@ -8,6 +8,7 @@ import "../style/Signup.css";
 function Signup() {
   //#region Const variables
   const apiUrl = "https://job-tracker-yqn9.onrender.com";
+  const apiLocal = "http://localhost:3000";
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -17,11 +18,55 @@ function Signup() {
   const navigator = useNavigate();
   //#endregion
   //#region Functions
+  function validateSignup({ firstName, lastName, email, password }) {
+    const nameRegex = /^[A-Za-z]+$/;
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    const asciiRegex = /^[\x00-\x7F]+$/; // only English characters/symbols
+
+    if (!nameRegex.test(firstName)) {
+      return "First name must contain only English letters";
+    }
+    if (!nameRegex.test(lastName)) {
+      return "Last name must contain only English letters";
+    }
+    if (!emailRegex.test(email)) {
+      return "Invalid email address";
+    }
+    if (!asciiRegex.test(password)) {
+      return "Password must contain only English letters, numbers, or symbols";
+    }
+
+    return null;
+  }
+
+  function formatName(name) {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
+
   const handleSignup = async (e) => {
     e.preventDefault();
+
+    const error = validateSignup({ firstName, lastName, email, password });
+
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    // 📝 Normalize names before sending
+    const formattedFirstName = formatName(firstName);
+    const formattedLastName = formatName(lastName);
+
     try {
-      const data = await createUser();
-      toast.success("User has successfully signed up!");
+      const data = await createUser({
+        firstName: formattedFirstName,
+        lastName: formattedLastName,
+        email: email.toLowerCase(),
+        password,
+        isEmployed,
+      });
+
+      toast.success("Account created successfully!");
       setUser({
         id: data.user._id,
         firstName: data.user.firstName,
@@ -30,39 +75,50 @@ function Signup() {
         password: data.user.password,
         employed: data.user.employed,
       });
+      console.log("New user:", data);
       navigator("/homepage");
     } catch (error) {
-      console.error(`Error while trying to sign up : ${error}`);
-      toast.error("Wrong input!");
+      console.error("Error creating user:", error.message);
+      toast.error(error.message);
     }
   };
 
-  async function createUser() {
-    try {
-      const response = await fetch(`${apiUrl}/auth/sign-up`, {
-        method: "POST",
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          password,
-          isEmployed,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
+  async function createUser({
+    firstName,
+    lastName,
+    email,
+    password,
+    isEmployed,
+  }) {
+    const response = await fetch(`${apiUrl}/auth/sign-up`, {
+      method: "POST",
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        password,
+        isEmployed,
+      }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      let errMsg = `Something went wrong (${response.status})`;
+
+      try {
+        const errorData = await response.json();
+        if (errorData.message) errMsg = errorData.message;
+      } catch {
+        // ignore parse errors
       }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error(`Error while creating user: ${error}`);
-      throw error;
+
+      throw new Error(errMsg);
     }
+
+    return response.json();
   }
+
   //#endregion
   return (
     <div className="signup-container">

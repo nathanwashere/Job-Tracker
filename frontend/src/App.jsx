@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, createContext, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import LandingPage from "./components/LandingPage";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -9,12 +9,13 @@ import Homepage from "./components/Homepage";
 import "./App.css";
 
 export const UserContext = createContext();
+
 function App() {
-  //#region Const variables
   const apiUrl = "https://job-tracker-yqn9.onrender.com";
-  const [user, setUser] = useState(null);
-  //#endregion
-  //#region Functions
+  const apiLocal = "http://localhost:3000";
+  const [user, setUser] = useState(undefined); // <-- undefined = not checked yet
+
+  // Check JWT cookie and restore user
   async function loadUser() {
     try {
       const response = await fetch(`${apiUrl}/auth/me`, {
@@ -22,23 +23,26 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error(`Response status is --> ${response.status}`);
+        if (response.status === 401) setUser(null);
+        else throw new Error(`Response status is --> ${response.status}`);
+        return;
       }
 
       const data = await response.json();
-      setUser(data.user);
+      setUser(data.user || null);
     } catch (error) {
-      if (error.message.includes("401")) {
-        setUser(null);
-      } else {
-        console.error("Error restoring user from cookie:", error);
-      }
+      console.error("Error restoring user from cookie:", error);
+      setUser(null);
     }
   }
+
   useEffect(() => {
     loadUser();
   }, []);
-  //#endregion
+
+  // Don’t render routes until user is checked
+  if (user === undefined) return null;
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <BrowserRouter>

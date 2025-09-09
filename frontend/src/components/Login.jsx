@@ -8,6 +8,7 @@ import "../style/Login.css";
 function Login() {
   //#region Const variables
   const apiUrl = "https://job-tracker-yqn9.onrender.com";
+  const apiLocal = "http://localhost:3000";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigator = useNavigate();
@@ -38,22 +39,21 @@ function Login() {
   };
 
   async function loginUser() {
-    try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
-        method: "POST",
-        body: JSON.stringify({ email: email, password: password }),
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error(`Error while logging user: ${error}`);
-      throw error;
+    const response = await fetch(`${apiUrl}/auth/login`, {
+      method: "POST",
+      body: JSON.stringify({ email: email, password: password }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    if (!response.ok) {
+      const errMsg =
+        response.status === 401
+          ? "Invalid email or password"
+          : "Something went wrong";
+      throw new Error(errMsg);
     }
+    const data = await response.json();
+    return data;
   }
   //#endregion
   return (

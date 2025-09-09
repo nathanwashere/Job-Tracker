@@ -13,8 +13,10 @@ import "../style/Homepage.css";
 function Homepage() {
   //#region Const variables
   const apiUrl = "https://job-tracker-yqn9.onrender.com";
+  const apiLocal = "http://localhost:3000";
   const { user, setUser } = useContext(UserContext);
   const navigator = useNavigate();
+  const [jobsLoaded, setJobsLoaded] = useState(false);
   const [jobApplications, setJobApplications] = useState([]);
   const totalApplications = jobApplications.length;
   const pendingCount = jobApplications.filter(
@@ -107,9 +109,19 @@ function Homepage() {
     }
   }
   useEffect(() => {
-    getJobApplications();
-  }, []);
+    if (!user) return;
+
+    async function fetchJobs() {
+      const apps = await getJobApplicationsForCurrentUser();
+      setJobApplications(apps || []);
+      setJobsLoaded(true);
+    }
+
+    fetchJobs();
+  }, [user]);
   //#endregion
+
+  if (!jobsLoaded) return null; // render nothing until jobs are loaded
   return (
     <div>
       <div className="title-box">
