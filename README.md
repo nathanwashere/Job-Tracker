@@ -42,7 +42,7 @@ Built with the **MERN stack** (MongoDB, Express, React, Node.js) and deployed wi
 ```bash
 git clone https://github.com/your-username/job-tracker.git
 cd job-tracker
-
+```
 ### 2. 🔧 Backend Setup
 
 Navigate into the backend folder, install dependencies, create a `.env` file, and start the server:
@@ -58,14 +58,14 @@ PORT=3000
 
 # Run the server
 npm start
-
+```
 ### 3. 🎨 Frontend
 
 The frontend is built with **React (Vite)** and styled with modern React libraries.  
 It communicates with the backend API and handles routing and authentication via JWT cookies.
-
+```bash
 Run locally with:
 npm install
 npm run dev
-
+```
 Available at **http://localhost:5173**
