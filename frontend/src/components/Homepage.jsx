@@ -31,7 +31,7 @@ function Homepage() {
   const rejectedCount = jobApplications.filter(
     (app) => app.status === "Rejected"
   ).length;
-  const interviewRejected = jobApplications.fill(
+  const interviewRejectedCount = jobApplications.filter(
     (app) => app.status === "Interview Rejected"
   ).length;
   const [filter, setFilter] = useState("all"); // <- define filter state
@@ -210,6 +210,16 @@ function Homepage() {
                 </div>
                 <div className="card-number">{ghostedCount}</div>
               </div>
+
+              <div className="summary-card">
+                <div className="card-top">
+                  <span>Interview Rejected</span>
+                  <i className="card-icon">
+                    <CircleX style={{ color: "purple" }} size={17} />
+                  </i>
+                </div>
+                <div className="card-number">{interviewRejectedCount}</div>
+              </div>
             </div>
           </div>
 
@@ -248,7 +258,7 @@ function Homepage() {
               className={filter === "interview rejected" ? "active" : ""}
               onClick={() => setFilter("interview rejected")}
             >
-              Rejected ({rejectedCount})
+              Interview Rejected ({interviewRejectedCount})
             </button>
           </div>
 
