@@ -17,7 +17,7 @@ const jobApplicationSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: "pending",
-    enum: ["Pending", "Accepted", "Rejected", "Ghosted"],
+    enum: ["Pending", "Accepted", "Rejected", "Ghosted", "Interview Rejected"],
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,

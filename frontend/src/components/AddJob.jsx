@@ -13,6 +13,7 @@ function AddJob() {
     { label: "Accepted", value: "Accepted" },
     { label: "Rejected", value: "Rejected" },
     { label: "Ghosted", value: "Ghosted" },
+    { label: "Interview Rejected", value: "Interview Rejected" },
   ];
   const uLocation = useLocation();
   const navigator = useNavigate();

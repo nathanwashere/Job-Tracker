@@ -31,6 +31,9 @@ function Homepage() {
   const rejectedCount = jobApplications.filter(
     (app) => app.status === "Rejected"
   ).length;
+  const interviewRejected = jobApplications.fill(
+    (app) => app.status === "Interview Rejected"
+  ).length;
   const [filter, setFilter] = useState("all"); // <- define filter state
   //#endregion
   //#region Functions
@@ -238,6 +241,12 @@ function Homepage() {
             <button
               className={filter === "rejected" ? "active" : ""}
               onClick={() => setFilter("rejected")}
+            >
+              Rejected ({rejectedCount})
+            </button>
+            <button
+              className={filter === "interview rejected" ? "active" : ""}
+              onClick={() => setFilter("interview rejected")}
             >
               Rejected ({rejectedCount})
             </button>
